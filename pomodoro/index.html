@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="stylesheet/style.css">
+</head>
+<body>
+
+<div id="mainscreen">
+
+<div id = "clock">
+00:25:00
+</div>
+<p id = "status"> Stopped</p>
+
+<div id = "left" class = "panel">
+<button class="changeButton">-1</button>
+<button class="changeButton">-10</button>
+<button class="changeButton">-60</button>
+</div>
+
+<div id="middle" class="panel">
+<button id="start" onclick = "clock()">Start</button>
+<button id="pause" >Pause</button>
+<button id="reset">Reset to 25:00</button>
+<p>Current time setted (in seconds): <span id="secondsSetted"></span></p>
+<input id="timeInput" class = "middle"></input>
+<button id="submit" onclick="setTime()">Submit</button>
+</div>
+
+<div id="right" class = "panel">
+<button class="changeButton">+1</button>
+<button class="changeButton"> +10</button>
+<button class="changeButton">+60</button>
+</div>
+<script src="scripts/main.js"></script
+</body>
+</html>
