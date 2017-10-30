@@ -9,13 +9,15 @@ var pause = false;
 var started = false;
 var statusText = document.getElementById("status");
 var pauseButton = document.getElementById("pause");
-var timeInput = document.getElementById("timeInput")
 var clockTimer = document.getElementById("clock")
+var buttons = document.getElementsByClassName("changeButton")
+var newTime
+
+//sets audio and volume
 var tick = new Audio("sounds/tick.mp3");
 tick.volume = "0.1"
 var alarm = new Audio("sounds/alarm.mp3");
 alarm.volume = "0.5"
-var intervalIndex = 0;
 
 //converts second time to XX:YY:ZZ
 function convert(time){
@@ -39,39 +41,34 @@ function convert(time){
 	seconds = time;
 
 	timeUnit.push(seconds)
-	
-	//adds 0 when unit is less than 10
+	//adds 0 when time unit is less than 10
 	for(var i=0; i<timeUnit.length; i++){
 	
 		if(timeUnit[i]<10)
 			timeString += "0" + timeUnit[i]
 		else
 			timeString += timeUnit[i]
-	//adds colon when while its not last unit
+	//adds colon while its not last unit
 		if(i !== timeUnit.length-1	)
 			timeString += ":"
 	}
-//	console.log(timeString)
-//	*/
 
 
 	clockTimer.innerHTML = timeString;
 	return timeString;
 	}
 	
-	
+	var clockInterval;
 
 function clock(){
 	
-			
 	if((started == false)&&(pause==false)){	
 		statusText.innerHTML = "Started"
 		started = true;
-		intervalIndex++;
-		setInterval(function(){
+		clockInterval = setInterval(function(){
 			
-			if(time==0){
-				clearInterval(intervalIndex);
+			if(time == 0){
+				clearInterval(clockInterval);
 				alarm.play();
 			}
 			
@@ -86,63 +83,51 @@ function clock(){
 	}
 }
 
-
 function pauseThis(){
-	if(pause == true){
-	pause=false;
-	statusText.innerHTML = "Unpaused"
-	pauseButton.innerHTML = "Pause"
+	if(pause){
+		statusText.innerHTML = "Unpaused"
+		pauseButton.innerHTML = "Pause"
 	}
 	
-else{
-	pause = true;
-	statusText.innerHTML = "Paused"
+	else{
+		statusText.innerHTML = "Paused"
 		pauseButton.innerHTML = "Unpause"
-}
+	}
+	pause = !pause
 	
 }
-
 
 function resetAll(){
 	statusText.innerHTML = "Reseted"
-	clearInterval(intervalIndex);
+	clearInterval(clockInterval);
 	started = false;
 	time = defaultTime;
-	
-	
 }
 
-var secondsSetted = document.getElementById("secondsSetted")
-var timeInput = document.getElementById("timeInput");
-var changed
 function setTime(){
-	changed = Number(timeInput.value);
-	if(typeof changed == "number"){
-			time = changed;
-			secondsSetted.innerHTML = convert(time);
+	newTime = Number(document.getElementById("timeInput").value);
+	if(typeof newTime == "number"){
+			time = newTime;
+			document.getElementById("secondsSetted").innerHTML = convert(time);
 	}
 	else
-		alert("Only seconds accepted")
+		alert("Time has to be a number");
 }
 
 function changeTime(){
-buttonValue = Number(this.innerHTML)
-if((buttonValue + time)>0)
-time += buttonValue;
-clockTimer.innerHTML = convert(time)
-}
-
-var buttonArray = document.getElementsByClassName("changeButton")
-
-
-for(var i=0; i<buttonArray.length; i++){
-buttonArray[i].addEventListener("click", changeTime)
+	buttonValue = Number(this.innerHTML)
+		if((buttonValue + time)>0)
+			time += buttonValue;
+	clockTimer.innerHTML = convert(time)
 }
 
 
-var resetButton = document.getElementById("reset");
-resetButton.addEventListener("click", resetAll)
+for(var i=0; i<buttons.length; i++){
+buttons[i].addEventListener("click", changeTime)
+}
 
-var pauseButton = document.getElementById("pause");
-pauseButton.addEventListener("click", pauseThis);
+
+document.getElementById("reset").addEventListener("click", resetAll)
+
+document.getElementById("pause").addEventListener("click", pauseThis);
 
