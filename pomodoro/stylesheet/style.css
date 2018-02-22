@@ -29,7 +29,8 @@ font-size: 20px;
 	width:200px;
 	height:300px;
 	display:inline-block;
-	 vertical-align: middle;
+	vertical-align: middle;
+	background-color:#ff9900;
 }
 
 

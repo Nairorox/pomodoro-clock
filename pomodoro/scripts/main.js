@@ -1,36 +1,38 @@
-var defaultTime = 1500;
-var time = defaultTime;
-var hours = 0;
-var minutes = 0;
-var seconds = 0;
-var timeString = "";
-var timeUnit = [];
-var pause = false;
-var started = false;
-var statusText = document.getElementById("status");
-var pauseButton = document.getElementById("pause");
-var clockTimer = document.getElementById("clock")
-var buttons = document.getElementsByClassName("changeButton")
-var newTime
+const statusText = document.getElementById("status");
+const pauseButton = document.getElementById("pause");
+const clockTimer = document.getElementById("clock");
+const resetButton = document.querySelector('#reset');
+const buttons = document.getElementsByClassName("changeButton");
+let defaultTime = 1500;
+let time = defaultTime;
+let hours = 0;
+let minutes = 0;
+let seconds = 0;
+let timeString = "";
+let timeUnit = [];
+let pause = false;
+let started = false;
+let newTime;
+let clockInterval;
 
 //sets audio and volume
 var tick = new Audio("sounds/tick.mp3");
-tick.volume = "0.1"
+tick.volume = "0.1";
 var alarm = new Audio("sounds/alarm.mp3");
-alarm.volume = "0.5"
+alarm.volume = "0.5";
 
 //converts second time to XX:YY:ZZ
 function convert(time){
 	//clears array
-		timeUnit=[];
+	timeUnit=[];
+
 	//clears string
-		timeString = ""
-		
-//		console.log(time)
+	timeString = "";
+
 	//hours
-		hours = Math.floor(time/3600);
-		time -= (hours*3600);
-		timeUnit.push(hours)
+	hours = Math.floor(time/3600);
+	time -= (hours*3600);
+	timeUnit.push(hours)
 
 	//minutes	
 	minutes = Math.floor(time/60)
@@ -43,62 +45,59 @@ function convert(time){
 	timeUnit.push(seconds)
 	//adds 0 when time unit is less than 10
 	for(var i=0; i<timeUnit.length; i++){
-	
-		if(timeUnit[i]<10)
-			timeString += "0" + timeUnit[i]
-		else
-			timeString += timeUnit[i]
+		if(timeUnit[i]<10){
+			timeString += "0" + timeUnit[i];
+		}
+		else{
+			timeString += timeUnit[i];
+		}
 	//adds colon while its not last unit
-		if(i !== timeUnit.length-1	)
-			timeString += ":"
+		if(i !== timeUnit.length-1){
+			timeString += ":";
+		}
 	}
-
 
 	clockTimer.innerHTML = timeString;
 	return timeString;
 	}
 	
-	var clockInterval;
 
 function clock(){
-	
-	if((started == false)&&(pause==false)){	
-		statusText.innerHTML = "Started"
+	if(!started && !pause){	
 		started = true;
+		alarm.pause();
+		statusText.innerHTML = "Started";
 		clockInterval = setInterval(function(){
-			
 			if(time == 0){
 				clearInterval(clockInterval);
+				started = false;
 				alarm.play();
 			}
 			
-			if((pause !== true) && (time>0)){
+			if(!pause && time > 0){
 				time--;
 				tick.play();
-				convert(time)
-				
+				convert(time);	
 			}
 		}, 1000);
-	
 	}
 }
 
-function pauseThis(){
+function pauseToggle(){
 	if(pause){
-		statusText.innerHTML = "Unpaused"
-		pauseButton.innerHTML = "Pause"
+		statusText.innerHTML = "Unpaused";
+		pauseButton.innerHTML = "Pause";
 	}
-	
 	else{
-		statusText.innerHTML = "Paused"
-		pauseButton.innerHTML = "Unpause"
+		statusText.innerHTML = "Paused";
+		pauseButton.innerHTML = "Unpause";
 	}
 	pause = !pause
-	
 }
 
-function resetAll(){
-	statusText.innerHTML = "Reseted"
+function reset(){
+	statusText.innerText = "Reseted";
+	clockTimer.innerText = convert(1500);
 	clearInterval(clockInterval);
 	started = false;
 	time = defaultTime;
@@ -115,19 +114,20 @@ function setTime(){
 }
 
 function changeTime(){
-	buttonValue = Number(this.innerHTML)
-		if((buttonValue + time)>0)
-			time += buttonValue;
-	clockTimer.innerHTML = convert(time)
+	buttonValue = Number(this.innerText);
+	if((buttonValue + time)>0){
+		time += buttonValue;
+	}
+	clockTimer.innerHTML = convert(time);
 }
 
 
 for(var i=0; i<buttons.length; i++){
-buttons[i].addEventListener("click", changeTime)
+	buttons[i].addEventListener("click", changeTime);
 }
 
 
-document.getElementById("reset").addEventListener("click", resetAll)
+resetButton.addEventListener("click", reset);
 
-document.getElementById("pause").addEventListener("click", pauseThis);
+pauseButton.addEventListener("click", pauseToggle);
 
